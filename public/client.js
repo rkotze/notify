@@ -7,20 +7,17 @@ if ('serviceWorker' in navigator) {
 }
 
 async function run() {
-  console.log('Registering service worker');
   const registration = await navigator.serviceWorker.
     register('/worker.js', { scope: '/' });
   console.log('Registered service worker');
 
-  console.log('Registering push');
   const subscription = await registration.pushManager.
     subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
     });
-  console.log('Registered push');
+  console.log('Subscribe push');
 
-  console.log('Sending push');
   await fetch('/subscribe', {
     method: 'POST',
     body: JSON.stringify(subscription),
@@ -28,7 +25,7 @@ async function run() {
       'content-type': 'application/json'
     }
   });
-  console.log('Sent push');
+  console.log('API sub and sent push');
 }
 
 // Boilerplate borrowed from https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
