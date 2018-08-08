@@ -30,7 +30,7 @@ app.get('/web-push/send', async (req, res) => {
   const subscriptionStr = await subs.read('rkotze');
   const subscription = JSON.parse(subscriptionStr);
 
-  const payload = JSON.stringify({ title: 'Amazing', body: "Check this content RKotze", icon: "http://portingteam.com/index.php?app=downloads&module=display&section=screenshot&record=36597&id=7840" });
+  const payload = JSON.stringify({ title: 'Amazing', body: "Check this content RKotze", icon: "/icon.png" });
 
   webpush.sendNotification(subscription, payload).catch(error => {
     console.error(error.stack);
