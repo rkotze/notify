@@ -1,8 +1,10 @@
 const express = require('express');
 const webpush = require('web-push');
+const config = require('config');
 
-const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
-const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
+const webPush = config.get('webPush');
+const publicVapidKey = webPush.publicKey;
+const privateVapidKey = webPush.privateKey;
 
 webpush.setVapidDetails('mailto:fake@newexample.com', publicVapidKey, privateVapidKey);
 
