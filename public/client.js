@@ -26,7 +26,10 @@ async function run() {
 
   await fetch('/web-push/subscribe', {
     method: 'POST',
-    body: JSON.stringify(subscription),
+    body: JSON.stringify({
+      name: "rkotze",
+      subscription
+    }),
     headers: {
       'content-type': 'application/json'
     }
