@@ -1,33 +1,28 @@
-async function getVapidPublicKey(){
+if ('serviceWorker' in navigator) {
+  console.log('Registering service worker');
+}
+
+async function getVapidPublicKey() {
   const res = await fetch('/web-push/setup');
   const setup = await res.json();
   return setup.vapidPublicKey;
 }
 
-if ('serviceWorker' in navigator) {
-  console.log('Registering service worker');
+async function onSubscribe(e) {
+  e.preventDefault();
+  const subForm = document.getElementById('subForm');
+  const formData = new FormData(subForm);
 
-  run().catch(error => console.error(error));
-}
-
-async function run() {
-  const registration = await navigator.serviceWorker.
-    register('/worker.js', { scope: '/' });
-  console.log('Registered service worker');
-
+  const registration = await registerServiceWorker();
   const publicVapidKey = await getVapidPublicKey();
+  const subscription = await createSubscribe(registration, publicVapidKey);
 
-  const subscription = await registration.pushManager.
-    subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
-    });
   console.log('Subscribe push');
 
   await fetch('/web-push/subscribe', {
     method: 'POST',
     body: JSON.stringify({
-      name: "rkotze",
+      name: formData.get("name"),
       subscription
     }),
     headers: {
@@ -35,6 +30,19 @@ async function run() {
     }
   });
   console.log('API sub and sent push');
+};
+
+async function createSubscribe(registration, publicVapidKey) {
+  return await registration.pushManager.
+    subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+    });
+}
+
+async function registerServiceWorker() {
+  return await navigator.serviceWorker.
+    register('/worker.js', { scope: '/' });
 }
 
 // Boilerplate borrowed from https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey

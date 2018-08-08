@@ -22,8 +22,14 @@ app.get('/web-push/setup', (req, res) => {
 
 app.post('/web-push/subscribe', (req, res) => {
   const user = req.body;
-  subs.write(user.name, user.subscription);
-  res.status(201).end();
+  if (user.name) {
+    subs.write(user.name, user.subscription);
+    res.status(201).end();
+  } else {
+    res.status(400).json({
+      error: "Need a username to subscribe!"
+    });
+  }
 });
 
 app.get('/web-push/send', async (req, res) => {
