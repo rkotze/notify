@@ -13,7 +13,13 @@ const app = express();
 app.use(express.static('public'));
 app.use(require('body-parser').json());
 
-app.post('/subscribe', (req, res) => {
+app.get('/web-push/setup', (req, res) => {
+  res.status(200).json({
+    "vapidPublicKey": publicVapidKey
+  });
+});
+
+app.post('/web-push/subscribe', (req, res) => {
   const subscription = req.body;
   res.status(201).json({});
   const payload = JSON.stringify({ title: 'Hint', body: "Check this hint out?", icon: "https://www.findmypast.co.uk/images/header/fmplogo-white1x-v2.png" });

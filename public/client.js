@@ -1,4 +1,8 @@
-const publicVapidKey = 'BDnHCjuEKK8q9DH1AMmoQI1zZpeKUvp1tJ17VT7mERllesaHnIPKvOeoegNOxEcCjr_Xm_ODkiMslNoqZFzbf-k';
+async function getVapidPublicKey(){
+  const res = await fetch('/web-push/setup');
+  const setup = await res.json();
+  return setup.vapidPublicKey;
+}
 
 if ('serviceWorker' in navigator) {
   console.log('Registering service worker');
@@ -11,6 +15,8 @@ async function run() {
     register('/worker.js', { scope: '/' });
   console.log('Registered service worker');
 
+  const publicVapidKey = await getVapidPublicKey();
+
   const subscription = await registration.pushManager.
     subscribe({
       userVisibleOnly: true,
@@ -18,7 +24,7 @@ async function run() {
     });
   console.log('Subscribe push');
 
-  await fetch('/subscribe', {
+  await fetch('/web-push/subscribe', {
     method: 'POST',
     body: JSON.stringify(subscription),
     headers: {
