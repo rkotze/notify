@@ -33,23 +33,28 @@ app.post('/web-push/subscribe', (req, res) => {
 });
 
 app.get('/web-push/send/:username', async (req, res) => {
-  if (!'username' in req.params) {
-    return res.status(400).json({
-      "error": "Last URL segment needs to be a username"
-    });
-  }
 
   const username = req.params.username;
-  const subscriptionStr = await subs.read(username);
-  const subscription = JSON.parse(subscriptionStr);
+  try {
+    const subscriptionStr = await subs.read(username);
+    const subscription = JSON.parse(subscriptionStr);
+    const payload = JSON.stringify({ title: "Amazing", body: `Check this content ${username}`, icon: "/icon.png" });
 
-  const payload = JSON.stringify({ title: "Amazing", body: `Check this content ${username}`, icon: "/icon.png" });
+    webpush.sendNotification(subscription, payload).catch(error => {
+      console.error(error.stack);
+    });
+    res.status(200).end();
+  } catch (ex) {
+    if (ex.code === "ENOENT") {
+      return res.status(400).json({
+        "error": "Username not found"
+      });
+    }
 
-  webpush.sendNotification(subscription, payload).catch(error => {
-    console.error(error.stack);
-  });
-
-  res.status(200).end();
+    res.status(500).json({
+      "error": "Oops ... something went wrong!!"
+    });
+  }
 });
 
 // TODO:
