@@ -23,7 +23,7 @@ app.get('/web-push/setup', (req, res) => {
 app.post('/web-push/subscribe', (req, res) => {
   const user = req.body;
   subs.write(user.name, user.subscription);
-  res.status(201);
+  res.status(201).end();
 });
 
 app.get('/web-push/send', async (req, res) => {
