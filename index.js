@@ -32,11 +32,18 @@ app.post('/web-push/subscribe', (req, res) => {
   }
 });
 
-app.get('/web-push/send', async (req, res) => {
-  const subscriptionStr = await subs.read('rkotze');
+app.get('/web-push/send/:username', async (req, res) => {
+  if (!'username' in req.params) {
+    return res.status(400).json({
+      "error": "Last URL segment needs to be a username"
+    });
+  }
+
+  const username = req.params.username;
+  const subscriptionStr = await subs.read(username);
   const subscription = JSON.parse(subscriptionStr);
 
-  const payload = JSON.stringify({ title: 'Amazing', body: "Check this content RKotze", icon: "/icon.png" });
+  const payload = JSON.stringify({ title: "Amazing", body: `Check this content ${username}`, icon: "/icon.png" });
 
   webpush.sendNotification(subscription, payload).catch(error => {
     console.error(error.stack);
