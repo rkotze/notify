@@ -3,9 +3,22 @@ const webpush = require('web-push');
 const config = require('config');
 const subs = require('./store-push-subs');
 
-const webPush = config.get('webPush');
-const publicVapidKey = webPush.publicKey;
-const privateVapidKey = webPush.privateKey;
+function getAppKeys() {
+  try{
+    const webPush = config.get('webPush');
+    return { 
+      publicVapidKey: webPush.publicKey,
+      privateVapidKey: webPush.privateKey
+    };
+  }catch(e){
+    return { 
+      publicVapidKey: process.env.PUBLIC_VAPID_KEY,
+      privateVapidKey: process.env.PRIVATE_VAPID_KEY
+    };
+  }
+}
+
+const { publicVapidKey, privateVapidKey } = getAppKeys();
 
 webpush.setVapidDetails('mailto:fake@newexample.com', publicVapidKey, privateVapidKey);
 
