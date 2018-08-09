@@ -76,6 +76,6 @@ app.get('/web-push/send/:username', async (req, res) => {
 // - put subs in categories
 // - look into db
 
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 app.listen(PORT);
 console.log(`Running on: localhost:${PORT}`);
