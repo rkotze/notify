@@ -10,7 +10,7 @@ async function query(){
   });
   await client.connect()
 
-  const res = await client.query(`CREATE TABLE users(
+  const res = await client.query(`CREATE TABLE IF NOT EXISTS users(
       id INT PRIMARY KEY     NOT NULL,
       name           CHAR(200)    NOT NULL,
       category       CHAR(200),
@@ -20,7 +20,7 @@ async function query(){
       keyp256dh      CHAR(200),
       keyAuth        CHAR(200)
   );
-  `)
+  `);
   console.log(res);
   await client.end();
 }
