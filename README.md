@@ -9,8 +9,15 @@ Default config `config/default.json`:
 ```json
 {
   "webPush": {
-    "publicKey": " ",
-    "privateKey": " "
+    "publicKey": "",
+    "privateKey": ""
+  },
+  "notifyDatabase": {
+    "user": "",
+    "host": "",
+    "database": "",
+    "password": "",
+    "port": 5432
   }
 }
 ```

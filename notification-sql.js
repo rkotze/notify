@@ -1,14 +1,17 @@
-const { Client } = require('pg')
+const { Client } = require("pg");
+const config = require("config");
 
-async function query(){
-  const client = new Client({
-    user: 'notify_admin',
-    host: 'localhost',
-    database: 'notify',
-    password: '123456',
-    port: 5432,
-  });
-  await client.connect()
+function getDbKeys() {
+  try {
+    return config.get("notifyDatabase");
+  } catch (e) {
+    console.log("Could not get notifty db config", e);
+  }
+}
+
+async function query() {
+  const client = new Client(getDbKeys());
+  await client.connect();
 
   const res = await client.query(`CREATE TABLE IF NOT EXISTS users(
       id INT PRIMARY KEY     NOT NULL,
