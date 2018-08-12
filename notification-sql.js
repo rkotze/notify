@@ -9,7 +9,7 @@ function getDbKeys() {
   }
 }
 
-async function query() {
+async function createUsersTable() {
   const client = new Client(getDbKeys());
   await client.connect();
 
@@ -28,4 +28,28 @@ async function query() {
   await client.end();
 }
 
-query();
+async function insert() {
+  const client = new Client(getDbKeys());
+  await client.connect();
+
+  const text = `INSERT INTO users(
+    id, name, category, granted, endpoint, expirationTime, keyp256dh, keyAuth) 
+    VALUES($1, $2, $3, $4, $5, $6, $7, $8)`;
+  const values = [
+    1,
+    "brianc",
+    "sub",
+    true,
+    "AKSFEW342ks",
+    "1999-01-08 04:05:06",
+    "asdf8we",
+    "aeiieiwwe883"
+  ];
+
+  const res = await client.query(text, values);
+  console.log(res.rows[0]);
+  await client.end();
+}
+
+createUsersTable();
+insert();
