@@ -14,7 +14,7 @@ async function createUsersTable() {
   await client.connect();
 
   const res = await client.query(`CREATE TABLE IF NOT EXISTS users(
-      id INT PRIMARY KEY     NOT NULL,
+      id SERIAL PRIMARY KEY     NOT NULL,
       name           CHAR(200)    NOT NULL,
       category       CHAR(200),
       granted        BOOLEAN,
@@ -32,11 +32,9 @@ async function insert() {
   const client = new Client(getDbKeys());
   await client.connect();
 
-  const text = `INSERT INTO users(
-    id, name, category, granted, endpoint, expirationTime, keyp256dh, keyAuth) 
-    VALUES($1, $2, $3, $4, $5, $6, $7, $8)`;
+  const text = `INSERT INTO users( name, category, granted, endpoint, expirationTime, keyp256dh, keyAuth) 
+    VALUES($1, $2, $3, $4, $5, $6, $7)`;
   const values = [
-    1,
     "brianc",
     "sub",
     true,
@@ -47,9 +45,13 @@ async function insert() {
   ];
 
   const res = await client.query(text, values);
-  console.log(res.rows[0]);
+  console.log(res);
   await client.end();
 }
 
-createUsersTable();
-insert();
+async function run() {
+  await createUsersTable();
+  await insert();
+}
+
+run();
