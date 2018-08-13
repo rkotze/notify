@@ -32,7 +32,7 @@ async function insert() {
   const client = new Client(getDbKeys());
   await client.connect();
 
-  const text = `INSERT INTO users( name, category, granted, endpoint, expirationTime, keyp256dh, keyAuth) 
+  const insertQuery = `INSERT INTO users( name, category, granted, endpoint, expirationTime, keyp256dh, keyAuth) 
     VALUES($1, $2, $3, $4, $5, $6, $7)`;
   const values = [
     "brianc",
@@ -44,14 +44,26 @@ async function insert() {
     "aeiieiwwe883"
   ];
 
-  const res = await client.query(text, values);
+  const res = await client.query(insertQuery, values);
   console.log(res);
+  await client.end();
+}
+
+async function getAllUsers() {
+  const client = new Client(getDbKeys());
+  await client.connect();
+
+  const text = `SELECT * FROM users`;
+
+  const res = await client.query(text);
+  console.log(res.rows);
   await client.end();
 }
 
 async function run() {
   await createUsersTable();
   await insert();
+  await getAllUsers();
 }
 
 run();
