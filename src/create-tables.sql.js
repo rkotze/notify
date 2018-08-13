@@ -9,7 +9,7 @@ async function createUsersTable() {
       name           CHAR(200)    NOT NULL,
       category       CHAR(200),
       granted        BOOLEAN,
-      endpoint       CHAR(200),
+      endpoint       CHAR(400),
       expirationTime TIMESTAMP,
       keyp256dh      CHAR(200),
       keyAuth        CHAR(200)

@@ -2,6 +2,7 @@ const express = require('express');
 const webpush = require('web-push');
 const config = require('config');
 const subs = require('./store-push-subs');
+const users = require('./src/users.sql');
 
 function getAppKeys() {
   try{
@@ -33,10 +34,16 @@ app.get('/web-push/setup', (req, res) => {
   });
 });
 
-app.post('/web-push/subscribe', (req, res) => {
+app.get('/web-push/users/get-all', async (req, res) => {
+  const dbUsers = await users.getAll();
+  res.status(200).json(dbUsers.rows);
+});
+
+app.post('/web-push/users/subscribe', async (req, res) => {
   const user = req.body;
   if (user.name) {
-    subs.write(user.name, user.subscription);
+    const { endpoint, expirationTime, keys } = user.subscription;
+    await users.insert([user.name, user.category, user.granted, endpoint, expirationTime, keys.p256dh, keys.auth]);
     res.status(201).end();
   } else {
     res.status(400).json({
