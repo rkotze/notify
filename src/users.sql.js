@@ -1,6 +1,6 @@
 const dbClient = require('./dbClient');
 
-export async function insert() {
+async function insert() {
   const client = dbClient();
   await client.connect();
 
@@ -21,7 +21,7 @@ export async function insert() {
   return res;
 }
 
-export async function getAllUsers() {
+async function getAll() {
   const client = dbClient();
   await client.connect();
 
@@ -31,3 +31,8 @@ export async function getAllUsers() {
   await client.end();
   return res;
 }
+
+module.exports = {
+  insert,
+  getAll
+};

@@ -9,6 +9,6 @@ function getDbKeys() {
   }
 }
 
-export default function dbClient(){
+module.exports = function dbClient(){
   return new Client(getDbKeys());
 }
