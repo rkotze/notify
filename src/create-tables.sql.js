@@ -6,13 +6,13 @@ async function createUsersTable() {
 
   const res = await client.query(`CREATE TABLE IF NOT EXISTS users(
       id SERIAL PRIMARY KEY     NOT NULL,
-      name           CHAR(200)    NOT NULL,
-      category       CHAR(200),
+      name           VARCHAR(200)    NOT NULL,
+      category       VARCHAR(200),
       granted        BOOLEAN,
-      endpoint       CHAR(400),
+      endpoint       VARCHAR(400),
       expirationTime TIMESTAMP,
-      keyp256dh      CHAR(200),
-      keyAuth        CHAR(200)
+      keyp256dh      VARCHAR(200),
+      keyAuth        VARCHAR(200)
   );
   `);
   console.log(res);
