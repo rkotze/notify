@@ -5,7 +5,10 @@ function getDbKeys() {
   try {
     return config.get("notifyDatabase");
   } catch (e) {
-    console.log("Could not get notifty db config", e);
+    return {
+      connectionString: process.env.DATABASE_URL,
+      ssl: true
+    };
   }
 }
 
