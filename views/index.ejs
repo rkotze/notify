@@ -2,15 +2,42 @@
 
 <head>
   <title>Push notifications Demo</title>
+  <style type="text/css">
+    .message {
+      display: none;
+    }
+
+    .message.open {
+      display: block;
+      color: #090;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
 <body>
-  <h2>EJS Get amazing push notifications demo</h2>
-
+  <h2>Get amazing push notifications demo</h2>
+  <div id="message" class="message"></div>
   <form id="subForm" name="subForm" onsubmit="onSubscribe(event)">
     <p>
       <label>Name</label>
       <input type="input" name="name" />
+    </p>
+    <p>
+      <label>Select your movie genre:</label>
+      <br/>
+      <label>Action:
+        <input type="radio" name="category" value="action" checked />
+      </label>
+      <br />
+      <label>Sci-Fi:
+        <input type="radio" name="category" value="sci-fi" />
+      </label>
+      <br />
+      <label>Comedy:
+        <input type="radio" name="category" value="comedy" />
+      </label>
+      <br />
     </p>
     <p>
       <input type="submit" value="Subscribe" />

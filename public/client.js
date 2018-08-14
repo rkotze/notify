@@ -1,52 +1,64 @@
-if ('serviceWorker' in navigator) {
-  console.log('Registering service worker');
+if ("serviceWorker" in navigator) {
+  console.log("Registering service worker");
 }
 
 async function getVapidPublicKey() {
-  const res = await fetch('/web-push/setup');
+  const res = await fetch("/web-push/setup");
   const setup = await res.json();
   return setup.vapidPublicKey;
 }
 
 async function onSubscribe(e) {
   e.preventDefault();
-  const subForm = document.getElementById('subForm');
+  const subForm = document.getElementById("subForm");
   const formData = new FormData(subForm);
 
   const serviceWorker = await registerServiceWorker();
-  const subscribe = await isSubscribed(serviceWorker);
+  const publicVapidKey = await getVapidPublicKey();
+  const subscription = await createSubscribe(serviceWorker, publicVapidKey);
 
-  if (!subscribe) {
-    const publicVapidKey = await getVapidPublicKey();
-    const subscription = await createSubscribe(serviceWorker, publicVapidKey);
-
-    console.log('Subscribe push');
-
-    await fetch('/web-push/subscribe', {
-      method: 'POST',
+  if (subscription) {
+    const subscribed = await fetch("/web-push/users/subscribe", {
+      method: "POST",
       body: JSON.stringify({
         name: formData.get("name"),
+        granted: true,
+        category: formData.get("category"),
         subscription
       }),
       headers: {
-        'content-type': 'application/json'
+        "content-type": "application/json"
       }
     });
-    console.log('API sub and sent push');
+
+    showMessage(subscribed.status === 201, "You have subscribed!");
+  } else {
+    showMessage(true, "Not subscribed!");
   }
-};
+}
+
+function showMessage(predicate, messageText) {
+  if (predicate === true) {
+    const message = document.getElementById("message");
+    message.classList.add("open");
+    message.innerHTML = messageText;
+  }
+}
 
 async function createSubscribe(registration, publicVapidKey) {
-  return await registration.pushManager.
-    subscribe({
+  try {
+    return await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
     });
+  } catch (ex) {
+    console.log("Rejected: ", ex);
+    return false;
+  }
 }
 
 async function registerServiceWorker() {
-  return await navigator.serviceWorker.
-    register('/worker.js', { scope: '/' });
+  return await navigator.serviceWorker.register("/worker.js", { scope: "/" });
 }
 
 async function isSubscribed(sw) {
@@ -62,10 +74,10 @@ async function isSubscribed(sw) {
 
 // Boilerplate borrowed from https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
 function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
+    .replace(/\-/g, "+")
+    .replace(/_/g, "/");
 
   const rawData = window.atob(base64);
   const outputArray = new Uint8Array(rawData.length);

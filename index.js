@@ -51,17 +51,24 @@ app.get("/web-push/users/get-all", async (req, res) => {
 app.post("/web-push/users/subscribe", async (req, res) => {
   const user = req.body;
   if (user.name) {
-    const { endpoint, expirationTime, keys } = user.subscription;
-    await users.insert([
-      user.name,
-      user.category,
-      user.granted,
-      endpoint,
-      expirationTime,
-      keys.p256dh,
-      keys.auth
-    ]);
-    res.status(201).end();
+    try {
+      const { endpoint, expirationTime, keys } = user.subscription;
+      await users.insert([
+        user.name,
+        user.category,
+        user.granted,
+        endpoint,
+        expirationTime,
+        keys.p256dh,
+        keys.auth
+      ]);
+      res.status(201).end();
+    } catch (e) {
+      console.log(e);
+      res.status(500).json({
+        error: e.message
+      });
+    }
   } else {
     res.status(400).json({
       error: "Need a username to subscribe!"
