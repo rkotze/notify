@@ -81,25 +81,34 @@ app.post("/web-push/users/subscribe", async (req, res) => {
   }
 });
 
-app.get("/web-push/send/:username", async (req, res) => {
-  const username = req.params.username;
+function buildSubList(listOfSubs) {
+  return listOfSubs.rows.map((user) => ({
+    endpoint: user.endpoint,
+    expirationTime: user.expirationTime,
+    keys: {
+      p256dh: user.keyp256dh,
+      auth: user.keyauth
+    }
+  }));
+}
+
+app.get("/web-push/send/:category", async (req, res) => {
   try {
-    const subscriptionStr = await subs.read(username);
-    const subscription = JSON.parse(subscriptionStr);
+    const subscription = buildSubList(await users.getByCategory(req.params.category));
     const payload = JSON.stringify({
       title: "Amazing",
-      body: `Check this content ${username}`,
+      body: `Check this content`,
       icon: "/icon.png"
     });
 
-    webpush.sendNotification(subscription, payload).catch(error => {
+    webpush.sendNotification(subscription[0], payload).catch(error => {
       console.error(error.stack);
     });
     res.status(200).end();
   } catch (ex) {
     if (ex.code === "ENOENT") {
       return res.status(400).json({
-        error: "Username not found"
+        error: "Category not found"
       });
     }
 
