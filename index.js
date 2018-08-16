@@ -48,6 +48,11 @@ app.get("/web-push/users/get-all", async (req, res) => {
   res.status(200).json(dbUsers.rows);
 });
 
+app.get("/web-push/users/category/:category", async (req, res) => {
+  const dbUsers = await users.getByCategory(req.params.category);
+  res.status(200).json(dbUsers.rows);
+});
+
 app.post("/web-push/users/subscribe", async (req, res) => {
   const user = req.body;
   if (user.name) {

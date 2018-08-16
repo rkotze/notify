@@ -1,4 +1,4 @@
-const dbClient = require('./dbClient');
+const dbClient = require('./db-client');
 
 async function insert([name, sub, granted, endpoint, expirationTime, keyp256dh, keyAuth]) {
   const client = dbClient();
@@ -24,7 +24,19 @@ async function getAll() {
   return res;
 }
 
+async function getByCategory(category) {
+  const client = dbClient();
+  await client.connect();
+
+  const query = `SELECT * FROM users WHERE category = '${category}'`;
+
+  const res = await client.query(query);
+  await client.end();
+  return res;
+}
+
 module.exports = {
   insert,
-  getAll
+  getAll,
+  getByCategory
 };
