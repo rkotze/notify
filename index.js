@@ -82,27 +82,39 @@ app.post("/web-push/users/subscribe", async (req, res) => {
 });
 
 function buildSubList(listOfSubs) {
-  return listOfSubs.rows.map((user) => ({
-    endpoint: user.endpoint,
-    expirationTime: user.expirationTime,
-    keys: {
-      p256dh: user.keyp256dh,
-      auth: user.keyauth
+  return listOfSubs.rows.map(user => ({
+    user: {
+      name: user.name,
+      category: user.category
+    },
+    subscription: {
+      endpoint: user.endpoint,
+      expirationTime: user.expirationTime,
+      keys: {
+        p256dh: user.keyp256dh,
+        auth: user.keyauth
+      }
     }
   }));
 }
 
 app.get("/web-push/send/:category", async (req, res) => {
   try {
-    const subscription = buildSubList(await users.getByCategory(req.params.category));
-    const payload = JSON.stringify({
-      title: "Amazing",
-      body: `Check this content`,
-      icon: "/icon.png"
-    });
+    const subscription = buildSubList(
+      await users.getByCategory(req.params.category)
+    );
 
-    webpush.sendNotification(subscription[0], payload).catch(error => {
-      console.error(error.stack);
+    subscription.forEach(userSub => {
+      const { user, subscription } = userSub;
+      const payload = JSON.stringify({
+        title: user.name,
+        body: `Check this content`,
+        icon: "/icon.png"
+      });
+
+      webpush.sendNotification(subscription, payload).catch(error => {
+        console.error(error.stack);
+      });
     });
     res.status(200).end();
   } catch (ex) {
