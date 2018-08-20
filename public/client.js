@@ -1,7 +1,3 @@
-if ("serviceWorker" in navigator) {
-  console.log("Registering service worker");
-}
-
 async function getVapidPublicKey() {
   const res = await fetch("/web-push/setup");
   const setup = await res.json();
@@ -33,6 +29,7 @@ async function onSubscribe(e) {
 
     showMessage(subscribed.status === 201, "You have subscribed!");
   } else {
+    console.log(subscription);
     showMessage(true, "Not subscribed!");
   }
 }
@@ -58,7 +55,12 @@ async function createSubscribe(registration, publicVapidKey) {
 }
 
 async function registerServiceWorker() {
-  return await navigator.serviceWorker.register("/worker.js", { scope: "/" });
+  if ("serviceWorker" in navigator) {
+    console.log("Supports service workers");
+    return await navigator.serviceWorker.register("/worker.js", { scope: "/" });
+  }
+
+  return false;
 }
 
 async function isSubscribed(sw) {
