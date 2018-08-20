@@ -29,3 +29,5 @@ _If you're not willing to pay $99 for Apple Developer Program, then no notificat
 - Safari 7 (OS X 10.9 or later required) for testing,
 - A website under HTTPS protocol,
 - Apple Developer Program account for registering a Website Push ID
+- [Tutorial: samuil.hakoniemi.net](http://samuli.hakoniemi.net/how-to-implement-safari-push-notifications-on-your-website/)
+- [Safari push notifications: developer.apple.com](https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/NotificationProgrammingGuideForWebsites/PushNotifications/PushNotifications.html)
