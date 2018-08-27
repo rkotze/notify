@@ -7,8 +7,9 @@ self.addEventListener("push", ev => {
 });
 
 self.addEventListener("notificationclick", function(event) {
-  console.log("On notification click: ", event.notification.tag);
+  console.log("On notification click: ", event.notification);
+  const link = event.notification.data.link;
   // Android doesn't close the notification when you click on it
   event.notification.close();
-  return clients.openWindow("https://www.richardkotze.com");
+  return clients.openWindow(link);
 });

@@ -3,18 +3,23 @@ const webpush = require("web-push");
 const config = require("config");
 const users = require("./users.sql");
 
-router.get("/send/:category", async (req, res) => {
+router.post("/send/:category", async (req, res) => {
   try {
     const subscription = buildSubList(
       await users.getByCategory(req.params.category)
     );
 
+    const content = req.body;
+
     subscription.forEach(userSub => {
       const { user, subscription } = userSub;
       const payload = JSON.stringify({
-        title: user.name,
-        body: `Check this content`,
-        icon: "/icon.png"
+        title: `${content.title} ${user.name}`,
+        body: content.mainText,
+        icon: "/icon.png",
+        data: {
+          link: content.link
+        }
       });
 
       webpush.sendNotification(subscription, payload).catch(error => {
