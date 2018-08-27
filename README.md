@@ -22,6 +22,11 @@ Default config `config/default.json`:
 }
 ```
 
+## About push notifications
+
+- Desktop: the browser needs to be opened for the notification to show.
+- Mobile: Even with the browser closed you will get the notification. However you will get a second notification saying the app has changed in the background.
+
 ## Safari push notifications
 
 _If you're not willing to pay $99 for Apple Developer Program, then no notifications for Safari users_
