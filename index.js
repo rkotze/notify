@@ -1,7 +1,6 @@
 const express = require("express");
 const webpush = require("web-push");
 const config = require("config");
-const subs = require("./store-push-subs");
 const users = require("./src/users.sql");
 
 function getAppKeys() {
