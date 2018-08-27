@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "start": "node .",
+    "dev": "nodemon ./index.js",
     "heroku-postbuild": "node ./src/create-tables.sql.js"
   },
   "dependencies": {
@@ -12,5 +13,14 @@
     "express": "4.16.3",
     "pg": "^7.4.3",
     "web-push": "3.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      ".git/*",
+      "node_modules/*"
+    ]
   }
 }
